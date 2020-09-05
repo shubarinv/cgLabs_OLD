@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.17)
+project(vh_cg)
+find_package(OpenGL REQUIRED)
+find_package(GLUT REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIR})
+link_libraries(${OPENGL_LIBRARIES})
+include_directories(${GLUT_INCLUDE_DIR})
+link_libraries(${GLUT_LIBRARIES})
+set(CMAKE_CXX_STANDARD 20)
+
+add_executable(vh_cg main.cpp)
