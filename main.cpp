@@ -1,44 +1,32 @@
 #include "Libs/vhundef/screen.hpp"
 #include "Libs/aixlog.hpp"
-#include "Libs/vhundef/keyboard_handler.hpp"
 
-void handleKeyboard() {
-  LOG(DEBUG) << "Checking keyboard state\n";
-  if (keyStates['q'] && bIsCtrlPressed) {
+void handleKeyboard(GLFWwindow *window, int key, int scancode, int action, int mods) {
+  LOG(DEBUG) << "Keyboard callback \n";
+  if ((key == GLFW_KEY_Q && action == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL)) {
 	LOG(INFO) << "Got quit command, destroying window\n";
-	glutDestroyWindow(glutGetWindow());
-	if (glutGetWindow() == 0) {
-	  LOG(DEBUG) << "Window was destroyed successfully\n";
-	  LOG(DEBUG) << "Quiting...\n";
-	  exit(0);
-	}
-	LOG(ERROR) << "Error occurred while destroying window!\n";
-	throw std::runtime_error("Failed to close window!");
+	glfwDestroyWindow(window);
+	LOG(DEBUG) << "Quiting...\n";
+	glfwTerminate();
+	exit(0);
   }
 }
 
-void renderScene() {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  handleKeyboard();
-  glutSwapBuffers();
-}
 
 int main(int argc, char *argv[]) {
-  keyStates = new bool[256];
   AixLog::Log::init<AixLog::SinkCout>(AixLog::Severity::trace);
   LOG(INFO) << "Hello, World!\n";
-  Screen screen(argc, argv);
-  screen.createWindow({100, 100}, {200, 200}, "Test");
-  LOG(DEBUG) << "Window Created\n";
-  // регистрация обратных вызовов
-  glutDisplayFunc(renderScene);
-  glutKeyboardFunc(onKeyPressed);
-  glutKeyboardUpFunc(onKeyUp);
-  glutIdleFunc(renderScene);
+  GLFWwindow *window = Screen::createWindow({100, 100}, {200, 200}, "Test");
+  glfwSetKeyCallback(window, handleKeyboard);
+  while (glfwWindowShouldClose(window) == GL_FALSE) {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	drawCircle(0, 0, 0.5, 50, {255, 0, 0});
 
-
-  // Основной цикл GLUT
-  glutMainLoop();
+	glfwSwapBuffers(window);
+	glfwPollEvents();
+  }
+  glfwDestroyWindow(window);
+  glfwTerminate();
   LOG(INFO) << "Program quit\n";
   return 0;
 }
