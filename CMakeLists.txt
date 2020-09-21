@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.17)
-project(vh_cg)
+project(cgLabs)
+
+set(CMAKE_CXX_STANDARD 20)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
-link_libraries(${OPENGL_LIBRARIES})
-include_directories(${GLUT_INCLUDE_DIR})
-link_libraries(${GLUT_LIBRARIES})
-set(CMAKE_CXX_STANDARD 20)
+find_package(GLFW3 REQUIRED)
 
-add_executable(vh_cg main.cpp)
+# Included these two lines:
+
+include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS})
+add_executable(cgLabs main.cpp lib2D.hpp)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLFW_LIBRARIES})
