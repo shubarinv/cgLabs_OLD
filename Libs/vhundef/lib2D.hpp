@@ -26,12 +26,12 @@ struct vec2 {
  * @param
  * @example drawPoint(0.5,0.5,2,{0.5,0.5,0.5});
 **/
-void drawPoint(int _x, int _y, int pointSize, vec3<float> _color) {
+void drawPoint(vec2<float> location, int pointSize, vec3<float> _color) {
   glColor3f(_color.a, _color.b, _color.c);
   glPointSize(pointSize);
   glEnable(GL_POINT_SMOOTH);
   glBegin(GL_POINTS);
-  glVertex2f(0.3, 0.3);
+  glVertex2f(location.a, location.b);
   glEnd();
   glDisable(GL_POINT_SMOOTH);
 }
@@ -54,7 +54,7 @@ void drawTriangle(vec3<vec2<float>> triangleSides, vec3<float> _color) {
   glEnd();
   glDisable(GL_LINE_SMOOTH);
 }
-void drawPolygon(const std::vector<vec2<float>>& polygonLines, vec3<float> _color) {
+void drawPolygon(const std::vector<vec2<float>> &polygonLines, vec3<float> _color) {
   glColor3f(_color.a, _color.b, _color.c);
   glEnable(GL_LINE_SMOOTH);
   glBegin(GL_POLYGON);
