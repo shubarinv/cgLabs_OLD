@@ -5,11 +5,12 @@
 #ifndef CGLABS__SCREEN_HPP_
 #define CGLABS__SCREEN_HPP_
 #define GL_SILENCE_DEPRECATION
-#include <glfw3.h>
-#include <string>
-#include <iostream>
-#include "lib2D.hpp"
 #include "../aixlog.hpp"
+#include "lib2D.hpp"
+#include <OpenGL/gl.h>
+#include <glfw3.h>
+#include <iostream>
+#include <string>
 
 class Screen {
  public:
@@ -40,6 +41,15 @@ class Screen {
 	  LOG(ERROR) << "GLFW was not initialised!\n";
 	  throw std::runtime_error("Failed to init GLFW");
 	}
+  }
+  static void clearScreen(vec3<unsigned short int> color = {0, 0, 0}) {
+	glClearColor(color.a, color.b, color.c, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  }
+  static vec2<int> getWindowSize(GLFWwindow *window) {
+	vec2<int> windowSize{0, 0};
+	glfwGetWindowSize(window, &windowSize.a, &windowSize.b);
+	return windowSize;
   }
 };
 

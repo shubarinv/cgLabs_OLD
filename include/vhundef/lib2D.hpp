@@ -5,9 +5,9 @@
 
 #ifndef CGLABS__LIB2D_HPP_
 #define CGLABS__LIB2D_HPP_
-#include <OpenGL/gl.h>
 #include <vector>
 #include <cmath>
+#include "OpenGL/gl.h"
 
 template<typename T>
 struct vec3 {
