@@ -7,6 +7,8 @@
 #define CGLABS__LIB2D_HPP_
 #include <vector>
 #include <cmath>
+#include <chrono>
+#include <thread>
 #include "OpenGL/gl.h"
 #include "../aixlog.hpp"
 
@@ -79,5 +81,8 @@ void drawCircle(float cx, float cy, float r, int num_segments, vec3<float> _colo
   }
   glEnd();
   glDisable(GL_LINE_SMOOTH);
+}
+void sleep(long int milliseconds) {
+  std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 #endif // CGLABS__LIB2D_HPP_

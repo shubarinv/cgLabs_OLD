@@ -17,6 +17,7 @@ void drawOnScreen() {
   drawLine({{-0.9, 0.9}, {-0.9, 0.5}}, {255, 0, 0});
   drawLine({{-0.9, 0.5}, {-0.7, 0.5}}, {255, 0, 0});
   drawLine({{-0.7, 0.5}, {-0.8, 0.6}}, {255, 0, 0});
+  sleep(30);
 }
 
 int main(int argc, char *argv[]) {
