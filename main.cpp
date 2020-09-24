@@ -1,6 +1,6 @@
 #include "include/vhundef/screen.hpp"
 #include "include/aixlog.hpp"
-#include "include/vhundef/text.hpp"
+#include "include//GLFW/glfw3.h"
 
 void handleKeyboard(GLFWwindow *window, int key, int scancode, int action, int mods) {
   LOG(DEBUG) << "Keyboard callback \n";
@@ -18,7 +18,6 @@ int main(int argc, char *argv[]) {
   AixLog::Log::init<AixLog::SinkCout>(AixLog::Severity::trace);
   LOG(INFO) << "Hello, World!\n";
   GLFWwindow *window = Screen::createWindow({100, 100}, {200, 200}, "Test");
-  Text text;
   vec2<int> windowSize = Screen::getWindowSize(window);
   glfwGetFramebufferSize(window, &windowSize.a, &windowSize.b);
 

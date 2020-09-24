@@ -7,8 +7,8 @@
 #define GL_SILENCE_DEPRECATION
 #include "../aixlog.hpp"
 #include "lib2D.hpp"
+#include "../GLFW/glfw3.h"
 #include <OpenGL/gl.h>
-#include <glfw3.h>
 #include <iostream>
 #include <string>
 
