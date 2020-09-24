@@ -1,8 +1,7 @@
 #include "include/vhundef/screen.hpp"
 #include "include/aixlog.hpp"
-#include "include//GLFW/glfw3.h"
 
-void handleKeyboard(GLFWwindow *window, int key, int scancode, int action, int mods) {
+void handleKeyboard(GLFWwindow *window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
   LOG(DEBUG) << "Keyboard callback \n";
   if ((key == GLFW_KEY_Q && action == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL)) {
 	LOG(INFO) << "Got quit command, destroying window\n";
@@ -12,15 +11,45 @@ void handleKeyboard(GLFWwindow *window, int key, int scancode, int action, int m
 	exit(0);
   }
 }
-
-void drawOnScreen() {
-  drawLine({{-0.9, 0.9}, {-0.9, 0.5}}, {255, 0, 0});
-  drawLine({{-0.9, 0.5}, {-0.7, 0.5}}, {255, 0, 0});
-  drawLine({{-0.7, 0.5}, {-0.8, 0.6}}, {255, 0, 0});
-  sleep(30);
+void drawLab1() {
+  // Nothing to do here
+}
+[[maybe_unused]] void drawLab2() {
+  { // Var 3 drawing 1
+	drawLine({{-0.9, 0.9}, {-0.9, 0.5}}, {255, 0, 0});
+	drawLine({{-0.9, 0.5}, {-0.7, 0.5}}, {255, 0, 0});
+	drawLine({{-0.7, 0.5}, {-0.8, 0.6}}, {255, 0, 0});
+	drawLine({{-0.8, 0.6}, {-0.7, 0.8}}, {255, 0, 0});
+	drawLine({{-0.7, 0.8}, {-0.6, 0.66}}, {255, 0, 0});
+	drawLine({{-0.6, 0.66}, {-0.65, 0.5}}, {255, 0, 0});
+	drawLine({{-0.65, 0.5}, {-0.45, 0.5}}, {255, 0, 0});
+  }
+  { // drawing 2
+	drawLine({{0.1, 0.8}, {0.2, 0.9}}, {0, 255, 0});
+	drawLine({{0.2, 0.9}, {0.3, 0.83}}, {0, 255, 0});
+	drawLine({{0.3, 0.83}, {0.5, 0.9}}, {0, 255, 0});
+	drawLine({{0.5, 0.9}, {0.5, 0.75}}, {0, 255, 0});
+	drawLine({{0.5, 0.75}, {0.23, 0.75}}, {0, 255, 0});
+	drawLine({{0.23, 0.75}, {0.3, 0.5}}, {0, 255, 0});
+	drawLine({{0.3, 0.5}, {0.13, 0.57}}, {0, 255, 0});
+	drawLine({{0.13, 0.57}, {0.1, 0.8}}, {0, 255, 0});
+  }
+  { // drawing 3
+	drawLine({{-0.9, -0.9}, {-0.9, -0.5}}, {0, 0, 255});
+	drawLine({{-0.9, -0.5}, {-0.7, -0.55}}, {0, 0, 255});
+	drawLine({{-0.7, -0.55}, {-0.4, -0.45}}, {0, 0, 255});
+	drawLine({{-0.4, -0.45}, {-0.36, -0.9}}, {0, 0, 255});
+	drawLine({{-0.36, -0.9}, {-0.56, -0.9}}, {0, 0, 255});
+	drawLine({{-0.56, -0.9}, {-0.56, -0.7}}, {0, 0, 255});
+	drawLine({{-0.56, -0.7}, {-0.66, -0.7}}, {0, 0, 255});
+	drawLine({{-0.66, -0.7}, {-0.8, -0.83}}, {0, 0, 255});
+	drawLine({{-0.8, -0.83}, {-0.66, -0.9}}, {0, 0, 255});
+	drawLine({{-0.66, -0.9}, {-0.9, -0.9}}, {0, 0, 255});
+  }
+  sleep(100);
 }
 
-int main(int argc, char *argv[]) {
+int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   AixLog::Log::init<AixLog::SinkCout>(AixLog::Severity::trace);
   LOG(INFO) << "Hello, World!\n";
   GLFWwindow *window = Screen::createWindow({100, 100}, {640, 480}, "Test");
@@ -29,7 +58,7 @@ int main(int argc, char *argv[]) {
 
   glfwSetKeyCallback(window, handleKeyboard);
   while (glfwWindowShouldClose(window) == GL_FALSE) {
-	Screen::updateScreen(drawOnScreen, {255, 255, 255}, window, true);
+	Screen::updateScreen(drawLab1, {0, 0, 0}, window, true);
   }
   glfwDestroyWindow(window);
   glfwTerminate();
