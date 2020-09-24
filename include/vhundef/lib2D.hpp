@@ -8,6 +8,7 @@
 #include <vector>
 #include <cmath>
 #include "OpenGL/gl.h"
+#include "../aixlog.hpp"
 
 template<typename T>
 struct vec3 {
@@ -26,6 +27,7 @@ struct vec2 {
  * @example drawPoint(0.5,0.5,2,{0.5,0.5,0.5});
 **/
 void drawPoint(vec2<float> location, int pointSize, vec3<float> _color) {
+  LOG(DEBUG) << "Drawing dot at: (" << location.a << "," << location.b << ") pointSize: " << pointSize << "\n";
   glColor3f(_color.a, _color.b, _color.c);
   glPointSize(pointSize);
   glEnable(GL_POINT_SMOOTH);
@@ -35,6 +37,8 @@ void drawPoint(vec2<float> location, int pointSize, vec3<float> _color) {
   glDisable(GL_POINT_SMOOTH);
 }
 void drawLine(vec2<vec2<float>> lineCoords, vec3<float> _color) {
+  LOG(DEBUG) << "Drawing line from: (" << lineCoords.a.a << "," << lineCoords.a.b << ") to: (" << lineCoords.b.a << "," << lineCoords.b.b
+			 << ")\n";
   glColor3f(_color.a, _color.b, _color.c);
   glEnable(GL_LINE_SMOOTH);
   glBegin(GL_LINES);
