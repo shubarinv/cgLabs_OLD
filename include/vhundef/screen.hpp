@@ -51,6 +51,13 @@ class Screen {
 	glfwGetWindowSize(window, &windowSize.a, &windowSize.b);
 	return windowSize;
   }
+  static void updateScreen(void (*drawFunction)(), vec3<unsigned short> clearColor, GLFWwindow *window, bool bPollEvents = true) {
+	Screen::clearScreen(clearColor);
+	drawFunction();
+	glfwSwapBuffers(window);
+	if (bPollEvents)
+	  glfwPollEvents();
+  }
 };
 
 #endif //CGLABS__SCREEN_HPP_

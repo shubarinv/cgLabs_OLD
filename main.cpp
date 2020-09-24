@@ -13,20 +13,22 @@ void handleKeyboard(GLFWwindow *window, int key, int scancode, int action, int m
   }
 }
 
+void drawOnScreen() {
+  drawLine({{-0.9, 0.9}, {-0.9, 0.5}}, {255, 0, 0});
+  drawLine({{-0.9, 0.5}, {-0.7, 0.5}}, {255, 0, 0});
+  drawLine({{-0.7, 0.5}, {-0.8, 0.6}}, {255, 0, 0});
+}
 
 int main(int argc, char *argv[]) {
   AixLog::Log::init<AixLog::SinkCout>(AixLog::Severity::trace);
   LOG(INFO) << "Hello, World!\n";
-  GLFWwindow *window = Screen::createWindow({100, 100}, {200, 200}, "Test");
+  GLFWwindow *window = Screen::createWindow({100, 100}, {640, 480}, "Test");
   vec2<int> windowSize = Screen::getWindowSize(window);
   glfwGetFramebufferSize(window, &windowSize.a, &windowSize.b);
 
   glfwSetKeyCallback(window, handleKeyboard);
   while (glfwWindowShouldClose(window) == GL_FALSE) {
-	Screen::clearScreen({255, 255, 255});
-	drawCircle(0, 0, 0.5, 50, {255, 0, 0});
-	glfwSwapBuffers(window);
-	glfwPollEvents();
+	Screen::updateScreen(drawOnScreen, {255, 255, 255}, window, true);
   }
   glfwDestroyWindow(window);
   glfwTerminate();
