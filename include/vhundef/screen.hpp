@@ -17,6 +17,12 @@ class Screen {
   Screen() = default;
   static GLFWwindow *createWindow(vec2<int> position, vec2<int> size, const std::string &windowName = "") {
 	if (glfwInit()) {
+	  glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
+	  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // We want OpenGL 3.3
+	  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
+	  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL
+
 	  LOG(INFO)
 		  << "Creating new window with name: " + windowName + " and size: " + std::to_string(size.a) + "x" + std::to_string(size.b) +
 			  " px\n";
@@ -26,6 +32,8 @@ class Screen {
 		throw std::runtime_error("Failed to create window!");
 	  }
 	  LOG(INFO) << "Window created successfully\n";
+	  // Ensure we can capture the escape key being pressed below
+	  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	  glfwSetWindowPos(window, position.a, position.b);
 	  glfwMakeContextCurrent(window);
 	  glfwSwapInterval(1);
@@ -51,8 +59,9 @@ class Screen {
 	glfwGetWindowSize(window, &windowSize.a, &windowSize.b);
 	return windowSize;
   }
-  static void updateScreen(void (*drawFunction)(), vec3<unsigned short> clearColor, GLFWwindow *window, bool bPollEvents = true) {
-	Screen::clearScreen(clearColor);
+  static void updateScreen(void (*drawFunction)(), vec3<unsigned short> clearColor, GLFWwindow *window, bool bPollEvents = true, bool
+  bClearScreen = true) {
+	if (bClearScreen)Screen::clearScreen(clearColor);
 	drawFunction();
 	glfwSwapBuffers(window);
 	if (bPollEvents)

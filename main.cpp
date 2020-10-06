@@ -1,6 +1,6 @@
 #include "include/vhundef/screen.hpp"
 #include "include/aixlog.hpp"
-
+#include "include/vhundef/shaders/shader.hpp"
 void handleKeyboard(GLFWwindow *window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
   LOG(DEBUG) << "Keyboard callback \n";
   if ((key == GLFW_KEY_Q && action == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL)) {
@@ -48,17 +48,50 @@ void drawLab1() {
   }
   sleep(100);
 }
-
+void gl3test() {
+  // This will identify our vertex buffer
+  GLuint vertexbuffer;
+// Generate 1 buffer, put the resulting identifier in vertexbuffer
+  glGenBuffers(1, &vertexbuffer);
+// The following commands will talk about our 'vertexbuffer' buffer
+  glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+  // An array of 3 vectors which represents 3 vertices
+  static const GLfloat g_vertex_buffer_data[] = {
+	  -1.0f, -1.0f, 0.0f,
+	  1.0f, -1.0f, 0.0f,
+	  0.0f, 1.0f, 0.0f,
+  };
+  // Give our vertices to OpenGL.
+  glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+  // 1st attribute buffer : vertices
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+  glVertexAttribPointer(
+	  0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+	  3,                  // size
+	  GL_FLOAT,           // type
+	  GL_FALSE,           // normalized?
+	  0,                  // stride
+	  (void *)0            // array buffer offset
+  );
+// Draw the triangle !
+  glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+  glDisableVertexAttribArray(0);
+}
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   AixLog::Log::init<AixLog::SinkCout>(AixLog::Severity::trace);
   LOG(INFO) << "Hello, World!\n";
   GLFWwindow *window = Screen::createWindow({100, 100}, {640, 480}, "Test");
   vec2<int> windowSize = Screen::getWindowSize(window);
   glfwGetFramebufferSize(window, &windowSize.a, &windowSize.b);
-
   glfwSetKeyCallback(window, handleKeyboard);
+
+  Shader shader("../include/vhundef/shaders/VertexShader.glsl", "../include/vhundef/shaders/FragmentShader.glsl");
+  GLuint programID = shader.uid;
+  glUseProgram(programID);
+
   while (glfwWindowShouldClose(window) == GL_FALSE) {
-	Screen::updateScreen(drawLab1, {0, 0, 0}, window, true);
+	Screen::updateScreen(gl3test, {0, 0, 0}, window, true, false);
   }
   glfwDestroyWindow(window);
   glfwTerminate();
