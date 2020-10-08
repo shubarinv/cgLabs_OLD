@@ -34,17 +34,27 @@ class Screen {
 		throw std::runtime_error("Failed to create window!");
 	  }
 	  LOG(INFO) << "Window created successfully\n";
+
 	  // Ensure we can capture the escape key being pressed below
 	  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	  glfwSetWindowPos(window, position.a, position.b);
 	  glfwMakeContextCurrent(window);
-	  { // remove that
-		GLuint VertexArrayID;
-		glGenVertexArrays(1, &VertexArrayID);
-		glBindVertexArray(VertexArrayID);
-	  }
 	  glfwSwapInterval(1);
 	  glfwShowWindow(window);
+	  glewExperimental = GL_TRUE;
+	  if (glewInit()) {
+		throw;
+	  }
+	  // get version info
+	  const GLubyte *renderer = glGetString(GL_RENDERER); // get renderer string
+	  const GLubyte *version = glGetString(GL_VERSION); // version as a string
+	  printf("Renderer: %s\n", renderer);
+	  printf("OpenGL version supported %s\n", version);
+
+	  // tell GL to only draw onto a pixel if the shape is closer to the viewer
+	  glEnable(GL_DEPTH_TEST); // enable depth-testing
+	  glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
+
 
 	  // Disabling ability to resize window
 	  int w, h;
@@ -73,6 +83,21 @@ class Screen {
 	glfwSwapBuffers(window);
 	if (bPollEvents)
 	  glfwPollEvents();
+  }
+  static void updateFpsCounter(GLFWwindow *window) {
+	static double previous_seconds = glfwGetTime();
+	static int frame_count;
+	double current_seconds = glfwGetTime();
+	double elapsed_seconds = current_seconds - previous_seconds;
+	if (elapsed_seconds > 0.25) {
+	  previous_seconds = current_seconds;
+	  double fps = (double)frame_count / elapsed_seconds;
+	  char tmp[128];
+	  sprintf(tmp, "opengl @ fps: %.2f", fps);
+	  glfwSetWindowTitle(window, tmp);
+	  frame_count = 0;
+	}
+	frame_count++;
   }
 };
 
