@@ -5,9 +5,11 @@
 #ifndef CGLABS__SCREEN_HPP_
 #define CGLABS__SCREEN_HPP_
 #define GL_SILENCE_DEPRECATION
+#include <GL/glew.h>
 #include "../aixlog.hpp"
 #include "lib2D.hpp"
 #include "../GLFW/glfw3.h"
+
 #include <OpenGL/gl.h>
 #include <iostream>
 #include <string>
@@ -36,6 +38,11 @@ class Screen {
 	  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	  glfwSetWindowPos(window, position.a, position.b);
 	  glfwMakeContextCurrent(window);
+	  { // remove that
+		GLuint VertexArrayID;
+		glGenVertexArrays(1, &VertexArrayID);
+		glBindVertexArray(VertexArrayID);
+	  }
 	  glfwSwapInterval(1);
 	  glfwShowWindow(window);
 

@@ -23,6 +23,7 @@ void drawLab1() {
 	drawLine({{-0.7, 0.8}, {-0.6, 0.66}}, {255, 0, 0});
 	drawLine({{-0.6, 0.66}, {-0.65, 0.5}}, {255, 0, 0});
 	drawLine({{-0.65, 0.5}, {-0.45, 0.5}}, {255, 0, 0});
+
   }
   { // drawing 2
 	drawLine({{0.1, 0.8}, {0.2, 0.9}}, {0, 255, 0});
@@ -46,7 +47,6 @@ void drawLab1() {
 	drawLine({{-0.8, -0.83}, {-0.66, -0.9}}, {0, 0, 255});
 	drawLine({{-0.66, -0.9}, {-0.9, -0.9}}, {0, 0, 255});
   }
-  sleep(100);
 }
 void gl3test() {
   // This will identify our vertex buffer
@@ -87,11 +87,41 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   glfwSetKeyCallback(window, handleKeyboard);
 
   Shader shader("../include/vhundef/shaders/VertexShader.glsl", "../include/vhundef/shaders/FragmentShader.glsl");
-  GLuint programID = shader.uid;
-  glUseProgram(programID);
+  glUseProgram(shader.uid);
 
-  while (glfwWindowShouldClose(window) == GL_FALSE) {
-	Screen::updateScreen(gl3test, {0, 0, 0}, window, true, false);
+  {
+	// An array of 3 vectors which represents 3 vertices
+	static const GLfloat g_vertex_buffer_data[] = {
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+	};
+// This will identify our vertex buffer
+	GLuint vertexbuffer;
+// Generate 1 buffer, put the resulting identifier in vertexbuffer
+	glGenBuffers(1, &vertexbuffer);
+// The following commands will talk about our 'vertexbuffer' buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+// Give our vertices to OpenGL.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
+	while (glfwWindowShouldClose(window) == GL_FALSE) {
+	  // 1st attribute buffer : vertices
+	  glEnableVertexAttribArray(0);
+	  glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	  glVertexAttribPointer(
+		  0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+		  3,                  // size
+		  GL_FLOAT,           // type
+		  GL_FALSE,           // normalized?
+		  0,                  // stride
+		  (void *)0            // array buffer offset
+	  );
+// Draw the triangle !
+	  glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+	  glDisableVertexAttribArray(0);
+	  Screen::updateScreen(gl3test, {0, 0, 0}, window, true, false);
+	}
   }
   glfwDestroyWindow(window);
   glfwTerminate();
