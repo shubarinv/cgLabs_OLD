@@ -9,4 +9,4 @@ include_directories(include/GLFW)
 
 include_directories(${OPENGL_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
 add_executable(cgLabs main.cpp include/vhundef/lib2D.hpp include/vhundef/screen.hpp include/vhundef/shaders/shader.hpp)
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw ${GLFW_LIBRARIES}glew ${GLEW_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw ${GLFW_LIBRARIES}GLEW::GLEW)
