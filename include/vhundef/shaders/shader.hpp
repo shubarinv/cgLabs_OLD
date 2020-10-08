@@ -81,6 +81,7 @@ class Shader {
 	// Delete the shaders as they're linked into our program now and no longer necessery
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
+	LOG(INFO) << "Ready to draw some stuff!\n";
   }
   unsigned int uid{};
 };
