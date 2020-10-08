@@ -67,14 +67,14 @@ class Shader {
 	}
 	LOG(INFO) << "Fragment shader compiled successfully\n";
 	// Shader Program
-	this->uid = glCreateProgram();
-	glAttachShader(this->uid, vertex);
-	glAttachShader(this->uid, fragment);
-	glLinkProgram(this->uid);
+	uid = glCreateProgram();
+	glAttachShader(uid, vertex);
+	glAttachShader(uid, fragment);
+	glLinkProgram(uid);
 	// Print linking errors if any
-	glGetProgramiv(this->uid, GL_LINK_STATUS, &success);
+	glGetProgramiv(uid, GL_LINK_STATUS, &success);
 	if (!success) {
-	  glGetProgramInfoLog(this->uid, 512, nullptr, infoLog);
+	  glGetProgramInfoLog(uid, 512, nullptr, infoLog);
 	  LOG(INFO) << "Shader linking failed\n" << infoLog << "\n";
 	}
 	LOG(INFO) << "Shaders were linked successfully\n";
