@@ -11,7 +11,7 @@ void handleKeyboard(GLFWwindow *window, int key, [[maybe_unused]] int scancode, 
 	exit(0);
   }
 }
-void drawLab1() {
+[[maybe_unused]] void drawLab1() {
   // Nothing to do here
 }
 [[maybe_unused]] void drawLab2() {
@@ -91,7 +91,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
 	glBindVertexArray(vao);
 
 	Screen::updateFpsCounter(window);
-	Screen::updateScreen(drawLab2, {0, 0, 0}, window, true, true);
+	Screen::updateScreen(gl3test, {0, 0, 0}, window, true, true);
 
   }
   glfwDestroyWindow(window);
