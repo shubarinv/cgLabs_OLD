@@ -30,9 +30,12 @@ class Vertex {
 	}
 	color = _color;
   }
-
-  float translateToFloatArray() {
-	return (position.a, position.b, position.c, color.a, color.b, color.c);
+  Vertex operator==(const Vertex &b) {
+	if (position.a == b.position.a &&
+		position.b == b.position.b &&
+		position.c == b.position.c) {
+	  return;
+	}
   }
 };
 

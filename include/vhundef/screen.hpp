@@ -9,6 +9,7 @@
 #include "../aixlog.hpp"
 #include "lib2D.hpp"
 #include "../GLFW/glfw3.h"
+#include "vertex.hpp"
 
 #include <OpenGL/gl.h>
 #include <iostream>
@@ -99,6 +100,7 @@ class Screen {
 	}
 	frame_count++;
   }
+
 };
 
 #endif //CGLABS__SCREEN_HPP_
