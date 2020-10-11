@@ -82,7 +82,7 @@ void drawPolygon(const std::vector<vec2<float>> &polygonLines, vec3<float> _colo
   glEnd();
   glDisable(GL_LINE_SMOOTH);
 }
-void sleep(long int milliseconds) {
+void _sleep(long int milliseconds) {
   std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 #endif // CGLABS__LIB2D_HPP_

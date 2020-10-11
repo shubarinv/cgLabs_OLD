@@ -6,6 +6,8 @@
 #define CGLABS_INCLUDE_VHUNDEF_VERTEX_GROUP_HPP_
 #define GL_SILENCE_DEPRECATION
 #include <glfw3.h>
+
+#include <utility>
 #include "screen.hpp"
 class VertexGroup {
  private:
@@ -14,16 +16,19 @@ class VertexGroup {
   GLuint VAO{};
   std::string name;
   std::vector<float> vertices;
+  int type{};
+
  public:
   [[nodiscard]] GLuint getVao() const {
 	return VAO;
   }
-  explicit VertexGroup(const std::vector<float> &_vertices, const std::string &_name = {}) {
+  explicit VertexGroup(const std::vector<float> &_vertices, int _type, const std::string &_name = {}) {
 	vertices = _vertices;
 	name = _name;
+	type = _type;
 	init();
   }
-  explicit VertexGroup(const std::vector<Vertex> &_vertices, const std::string &_name) {
+  explicit VertexGroup(const std::vector<Vertex> &_vertices, int _type, const std::string &_name) {
 	for (auto &vertex:_vertices) {
 	  auto position = vertex.getPosition();
 	  auto color = vertex.getColor();
@@ -37,6 +42,8 @@ class VertexGroup {
 	if (vertices.size() % 6 != 0) {
 	  throw std::runtime_error("Incorrect amount of args!");
 	}
+	name = _name;
+	type = _type;
 	init();
   }
   void init() {
@@ -55,6 +62,30 @@ class VertexGroup {
 // color attribute
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+  }
+  unsigned long getVerticesSize() {
+	return vertices.size();
+  }
+  [[nodiscard]] int getType() const {
+	return type;
+  }
+  void updateVertices(std::vector<float> _updatedVertices) {
+	if (_updatedVertices.size() != vertices.size()) {
+	  throw std::runtime_error("Can't update vertices, updated array size if different!");
+	}
+	vertices = std::move(_updatedVertices);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+	// 3. then set our vertex attributes pointers
+// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)nullptr);
+	glEnableVertexAttribArray(0);
+// color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+  }
+  std::vector<float> getVertices() {
+	return vertices;
   }
 };
 

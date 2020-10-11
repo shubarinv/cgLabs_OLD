@@ -14,12 +14,12 @@ class Vertex {
   [[nodiscard]] const vec3<float> &getColor() const {
 	return color;
   }
- private:
-  vec3<float> color{};
   explicit Vertex(vec3<float> _pos = {0, 0, 0}, vec3<float> _color = {0, 0, 0}) {
 	setPosition(_pos);
 	setColor(_color);
   }
+ private:
+  vec3<float> color{};
   void setPosition(vec3<float> _newPosition) {
 	if (_newPosition.a < -1 || _newPosition.a > 1 ||
 		_newPosition.b < -1 || _newPosition.b > 1 ||

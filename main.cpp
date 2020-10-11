@@ -2,6 +2,9 @@
 #include "include/aixlog.hpp"
 #include "include/vhundef/shaders/shader.hpp"
 #include "include/vhundef/vertex_group.hpp"
+
+std::vector<VertexGroup> vertexGroups;
+
 void handleKeyboard(GLFWwindow *window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
   LOG(DEBUG) << "Keyboard callback \n";
   if ((key == GLFW_KEY_Q && action == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL)) {
@@ -50,8 +53,15 @@ void handleKeyboard(GLFWwindow *window, int key, [[maybe_unused]] int scancode, 
   }
 }
 void gl3test() {
-// draw points 0-3 from the currently bound VAO with current in-use shader
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  for (auto &vertexGroup:vertexGroups) {
+	auto vertices = vertexGroup.getVertices();
+	std::rotate(vertices.begin(), vertices.begin() + 7, vertices.end());
+	vertexGroup.updateVertices(vertices);
+	glBindVertexArray(vertexGroup.getVao());
+	glDrawArrays(vertexGroup.getType(), 0, vertexGroup.getVerticesSize());
+  }
+  _sleep(100);
+
 }
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   AixLog::Log::init<AixLog::SinkCout>(AixLog::Severity::trace);
@@ -62,14 +72,18 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   glfwSetKeyCallback(window, handleKeyboard);
 
   Shader shader("VertexShader.glsl", "FragmentShader.glsl");
-  VertexGroup vg_test({0.8f, -0.8f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom right
-					   -0.8f, -0.8f, 0.0f, 0.0f, 1.0f, 0.0f,   // bottom left
-					   0, 0.8f, 0.0f, 0.0f, 0.0f, 1.0f}, "test1");
+  vertexGroups.emplace_back(VertexGroup({0.8f, -0.8f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom right
+										 -0.8f, -0.8f, 0.0f, 0.0f, 1.0f, 0.0f,   // bottom left
+										 0, 0.8f, 0.0f, 0.0f, 0.0f, 1.0f}, GL_TRIANGLES, "test1"));
+  /* vertexGroups.emplace_back(VertexGroup(
+	   {Vertex{{-0.9f, 0.9f, 0}, {1, 0, 0}},
+		Vertex{{0, -0.9, 0}, {0, 1, 0}},
+		Vertex{{0.9, 0.9, 0}, {0, 0, 1}},}, GL_TRIANGLES,
+	   "test2"));*/
   while (glfwWindowShouldClose(window) == GL_FALSE) {
 
 	// 1st attribute buffer : vertices
 	glUseProgram(shader.uid);
-	glBindVertexArray(vg_test.getVao());
 
 	Screen::updateFpsCounter(window);
 	Screen::updateScreen(gl3test, {0, 0, 0}, window, true, true);
