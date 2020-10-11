@@ -1,5 +1,9 @@
 #include "include/vhundef/screen.hpp"
 #include "include/aixlog.hpp"
+#include "include/vhundef/shaders/shader.hpp"
+#include "include/vhundef/vertex_group.hpp"
+
+std::vector<VertexGroup> vertexGroups;
 
 void handleKeyboard(GLFWwindow *window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
   LOG(DEBUG) << "Keyboard callback \n";
@@ -11,7 +15,7 @@ void handleKeyboard(GLFWwindow *window, int key, [[maybe_unused]] int scancode, 
 	exit(0);
   }
 }
-void drawLab1() {
+[[maybe_unused]] void drawLab1() {
   // Nothing to do here
 }
 [[maybe_unused]] void drawLab2() {
@@ -23,6 +27,7 @@ void drawLab1() {
 	drawLine({{-0.7, 0.8}, {-0.6, 0.66}}, {255, 0, 0});
 	drawLine({{-0.6, 0.66}, {-0.65, 0.5}}, {255, 0, 0});
 	drawLine({{-0.65, 0.5}, {-0.45, 0.5}}, {255, 0, 0});
+
   }
   { // drawing 2
 	drawLine({{0.1, 0.8}, {0.2, 0.9}}, {0, 255, 0});
@@ -46,19 +51,43 @@ void drawLab1() {
 	drawLine({{-0.8, -0.83}, {-0.66, -0.9}}, {0, 0, 255});
 	drawLine({{-0.66, -0.9}, {-0.9, -0.9}}, {0, 0, 255});
   }
-  sleep(100);
 }
+void gl3test() {
+  for (auto &vertexGroup:vertexGroups) {
+	auto vertices = vertexGroup.getVertices();
+	std::rotate(vertices.begin(), vertices.begin() + 7, vertices.end());
+	vertexGroup.updateVertices(vertices);
+	glBindVertexArray(vertexGroup.getVao());
+	glDrawArrays(vertexGroup.getType(), 0, vertexGroup.getVerticesSize());
+  }
+  _sleep(100);
 
+}
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   AixLog::Log::init<AixLog::SinkCout>(AixLog::Severity::trace);
   LOG(INFO) << "Hello, World!\n";
   GLFWwindow *window = Screen::createWindow({100, 100}, {640, 480}, "Test");
   vec2<int> windowSize = Screen::getWindowSize(window);
   glfwGetFramebufferSize(window, &windowSize.a, &windowSize.b);
-
   glfwSetKeyCallback(window, handleKeyboard);
+
+  Shader shader("VertexShader.glsl", "FragmentShader.glsl");
+  vertexGroups.emplace_back(VertexGroup({0.8f, -0.8f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom right
+										 -0.8f, -0.8f, 0.0f, 0.0f, 1.0f, 0.0f,   // bottom left
+										 0, 0.8f, 0.0f, 0.0f, 0.0f, 1.0f}, GL_TRIANGLES, "test1"));
+  /* vertexGroups.emplace_back(VertexGroup(
+	   {Vertex{{-0.9f, 0.9f, 0}, {1, 0, 0}},
+		Vertex{{0, -0.9, 0}, {0, 1, 0}},
+		Vertex{{0.9, 0.9, 0}, {0, 0, 1}},}, GL_TRIANGLES,
+	   "test2"));*/
   while (glfwWindowShouldClose(window) == GL_FALSE) {
-	Screen::updateScreen(drawLab1, {0, 0, 0}, window, true);
+
+	// 1st attribute buffer : vertices
+	glUseProgram(shader.uid);
+
+	Screen::updateFpsCounter(window);
+	Screen::updateScreen(gl3test, {0, 0, 0}, window, true, true);
+
   }
   glfwDestroyWindow(window);
   glfwTerminate();

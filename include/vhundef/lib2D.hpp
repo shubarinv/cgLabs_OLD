@@ -69,7 +69,7 @@ void drawPolygon(const std::vector<vec2<float>> &polygonLines, vec3<float> _colo
   glEnd();
   glDisable(GL_LINE_SMOOTH);
 }
-void drawCircle(float cx, float cy, float r, int num_segments, vec3<float> _color) {
+[[deprecated("Broken")]]void drawCircle(float cx, float cy, float r, int num_segments, vec3<float> _color) {
   glColor3f(_color.a, _color.b, _color.c);
   glEnable(GL_LINE_SMOOTH);
   glBegin(GL_LINE_LOOP);
@@ -82,7 +82,7 @@ void drawCircle(float cx, float cy, float r, int num_segments, vec3<float> _colo
   glEnd();
   glDisable(GL_LINE_SMOOTH);
 }
-void sleep(long int milliseconds) {
+void _sleep(long int milliseconds) {
   std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 #endif // CGLABS__LIB2D_HPP_
