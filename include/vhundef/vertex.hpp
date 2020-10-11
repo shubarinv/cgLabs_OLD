@@ -4,10 +4,17 @@
 
 #ifndef CGLABS_INCLUDE_VHUNDEF_VERTEX_HPP_
 #define CGLABS_INCLUDE_VHUNDEF_VERTEX_HPP_
-
 #include "lib2D.hpp"
 class Vertex {
   vec3<float> position{};
+ public:
+  [[nodiscard]] const vec3<float> &getPosition() const {
+	return position;
+  }
+  [[nodiscard]] const vec3<float> &getColor() const {
+	return color;
+  }
+ private:
   vec3<float> color{};
   explicit Vertex(vec3<float> _pos = {0, 0, 0}, vec3<float> _color = {0, 0, 0}) {
 	setPosition(_pos);
@@ -30,12 +37,12 @@ class Vertex {
 	}
 	color = _color;
   }
-  Vertex operator==(const Vertex &b) {
+  bool operator==(const Vertex &b) const {
 	if (position.a == b.position.a &&
 		position.b == b.position.b &&
 		position.c == b.position.c) {
-	  return;
-	}
+	  return true;
+	} else return false;
   }
 };
 

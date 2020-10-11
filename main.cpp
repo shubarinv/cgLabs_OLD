@@ -1,6 +1,7 @@
 #include "include/vhundef/screen.hpp"
 #include "include/aixlog.hpp"
 #include "include/vhundef/shaders/shader.hpp"
+#include "include/vhundef/vertex_group.hpp"
 void handleKeyboard(GLFWwindow *window, int key, [[maybe_unused]] int scancode, int action, [[maybe_unused]] int mods) {
   LOG(DEBUG) << "Keyboard callback \n";
   if ((key == GLFW_KEY_Q && action == GLFW_PRESS) && glfwGetKey(window, GLFW_KEY_LEFT_CONTROL)) {
@@ -61,34 +62,14 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
   glfwSetKeyCallback(window, handleKeyboard);
 
   Shader shader("VertexShader.glsl", "FragmentShader.glsl");
-  float vertices[] = {
-	  // positions         // colors
-	  0.8f, -0.8f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom right
-	  -0.8f, -0.8f, 0.0f, 0.0f, 1.0f, 0.0f,   // bottom left
-	  0, 0.8f, 0.0f, 0.0f, 0.0f, 1.0f    // top
-  };
-  GLuint vbo = 0;
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-  GLuint vao = 0;
-  glGenVertexArrays(1, &vao);
-  glBindVertexArray(vao);
-  // 2. copy our vertices array in a buffer for OpenGL to use
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-// 3. then set our vertex attributes pointers
-// position attribute
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)nullptr);
-  glEnableVertexAttribArray(0);
-// color attribute
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
-  glEnableVertexAttribArray(1);
+  VertexGroup vg_test({0.8f, -0.8f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom right
+					   -0.8f, -0.8f, 0.0f, 0.0f, 1.0f, 0.0f,   // bottom left
+					   0, 0.8f, 0.0f, 0.0f, 0.0f, 1.0f}, "test1");
   while (glfwWindowShouldClose(window) == GL_FALSE) {
 
 	// 1st attribute buffer : vertices
 	glUseProgram(shader.uid);
-	glBindVertexArray(vao);
+	glBindVertexArray(vg_test.getVao());
 
 	Screen::updateFpsCounter(window);
 	Screen::updateScreen(gl3test, {0, 0, 0}, window, true, true);

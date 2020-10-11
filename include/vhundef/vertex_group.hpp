@@ -1,36 +1,61 @@
 //
-// Created by Vladimir Shubarin on 10/10/20.
+// Created by Vladimir Shubarin on 11.10.2020.
 //
 
 #ifndef CGLABS_INCLUDE_VHUNDEF_VERTEX_GROUP_HPP_
 #define CGLABS_INCLUDE_VHUNDEF_VERTEX_GROUP_HPP_
-
-#include <utility>
-#include <vector>
-#include "vertex.hpp"
+#define GL_SILENCE_DEPRECATION
+#include <glfw3.h>
+#include "screen.hpp"
 class VertexGroup {
  private:
-  std::vector<Vertex> vertices;
-  short type;
+  ///< Hold vertex position data
+  GLuint VBO{}; ///< kinda holds attribs for vertices eg Color
+  GLuint VAO{};
+  std::string name;
+  std::vector<float> vertices;
  public:
-  explicit VertexGroup(short _type) {
-	type = _type;
+  [[nodiscard]] GLuint getVao() const {
+	return VAO;
   }
-  VertexGroup(std::vector<Vertex> _vertices, short _type) {
-	vertices = std::move(_vertices);
-	type = _type;
+  explicit VertexGroup(const std::vector<float> &_vertices, const std::string &_name = {}) {
+	vertices = _vertices;
+	name = _name;
+	init();
   }
-  void addVertex(Vertex newVertex) {
-	vertices.emplace_back(newVertex);
-  }
-  void changeVertex(Vertex previousVal, Vertex newVal) {
-	for (auto &vertex:vertices) {
-	  if (vertex == previousVal) {
-		vertex = newVal;
-	  }
+  explicit VertexGroup(const std::vector<Vertex> &_vertices, const std::string &_name) {
+	for (auto &vertex:_vertices) {
+	  auto position = vertex.getPosition();
+	  auto color = vertex.getColor();
+	  vertices.emplace_back(position.a);
+	  vertices.emplace_back(position.b);
+	  vertices.emplace_back(position.c);
+	  vertices.emplace_back(color.a);
+	  vertices.emplace_back(color.b);
+	  vertices.emplace_back(color.c);
 	}
+	if (vertices.size() % 6 != 0) {
+	  throw std::runtime_error("Incorrect amount of args!");
+	}
+	init();
   }
+  void init() {
+	glGenBuffers(1, &VBO);
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO); ///< Stating that we will make changes in this buffer from now on
 
+	// Copying vertices from array(vertices) in a buffer for OpenGL to use
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+	// 3. then set our vertex attributes pointers
+// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)nullptr);
+	glEnableVertexAttribArray(0);
+// color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+  }
 };
 
 #endif //CGLABS_INCLUDE_VHUNDEF_VERTEX_GROUP_HPP_

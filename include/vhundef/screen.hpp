@@ -62,6 +62,9 @@ class Screen {
 	  glfwGetWindowSize(window, &w, &h);
 	  glfwSetWindowSizeLimits(window, w, h, w, h);
 	  LOG(DEBUG) << "Disabled ability to resize window\n";
+	  int maxVertexAttribsIndex = 0;
+	  glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxVertexAttribsIndex);
+	  LOG(DEBUG) << "Max Vertex Attribs: " << maxVertexAttribsIndex << "\n";
 	  return window;
 	} else {
 	  LOG(ERROR) << "GLFW was not initialised!\n";
